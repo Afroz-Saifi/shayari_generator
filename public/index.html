@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Content Generator</title>
+    <style>
+      body {
+        background-color: #181818;
+        color: white;
+        font-family: Arial, sans-serif;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #0d0d46;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      .form-group {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+
+      label {
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      select,
+      input[type="text"],
+      .generate-button {
+        padding: 5px;
+        margin-bottom: 10px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      select,
+      input[type="text"] {
+        width: 48%;
+      }
+
+      select {
+        background-color: #1c1c4f;
+        color: white;
+      }
+
+      input[type="text"] {
+        background-color: #1c1c4f;
+        color: white;
+        padding-left: 10px;
+      }
+
+      .generate-button {
+        width: 100%;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+      }
+
+      .output {
+        padding: 10px;
+        background-color: #1c1c4f;
+        color: white;
+        border-radius: 5px;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Content Generator</h1>
+      <div class="form-group">
+        <div>
+          <label for="content">Content Type:</label>
+          <select id="content">
+            <option value="joke">Joke</option>
+            <option value="meme">Meme</option>
+            <option value="shayari">Shayari</option>
+            <option value="poems">Poems</option>
+          </select>
+        </div>
+        <div>
+          <label for="language">Language:</label>
+          <select id="language">
+            <option value="English">English</option>
+            <option value="Hindi">Hindi</option>
+            <option value="Spanish">Spanish</option>
+            <!-- Add more language options as needed -->
+          </select>
+        </div>
+      </div>
+      <input
+        type="text"
+        id="input"
+        style="margin-bottom: 10px"
+        placeholder="What you want?"
+      />
+      <button class="generate-button" onclick="generateContent()">
+        Generate
+      </button>
+      <div class="output" id="output"></div>
+    </div>
+
+    <script>
+      const api = "http://localhost:8500/generate";
+      function generateContent() {
+        const content = document.getElementById("content").value;
+        const language = document.getElementById("language").value;
+        const input = document.getElementById("input").value;
+        const outputElement = document.getElementById("output");
+
+        // Make an HTTP request to the backend
+        fetch(api, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: content,
+            language: language,
+            input: input,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            // Display the generated content in the output element
+            outputElement.innerText = data.response;
+          })
+          .catch((error) => {
+            console.error(error);
+            outputElement.innerText =
+              "An error occurred while generating the content.";
+          });
+      }
+    </script>
+  </body>
+</html>
